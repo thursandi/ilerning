@@ -154,6 +154,10 @@ k.thn_akademik = '2017' and k.periode = '1' and k.status = 1 and j.id_ruangan = 
                                           mtk.id_mtk, 
                                           krs.semester, 
                                           krs.thn_akademik
+					  
+					  COUNT(CASE WHEN absen_mtk_detail_mhs.status_absen = 1 THEN absen_mtk_detail_mhs.status_absen else null end)
+                                        / COUNT(absen_mtk_detail_mhs.nim)
+                                        * 100 as pers
 
                                      FROM `absen_mtk`, absen_mtk_detail_mhs,jadual, mtk, krs
                                      
