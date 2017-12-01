@@ -115,13 +115,12 @@ class Absensi_model extends CI_Model {
     function absensi_detail($id_jadual){
     //return $this->db->get('mhs');
     //$this->query = $this->db_2->query("SELECT * FROM absen_mtk_detail_mhs, mhs WHERE absen_mtk_detail_mhs.nim = mhs.nim AND absen_mtk_detail_mhs.id_absen = '".$id_absen."' ORDER BY absen_mtk_detail_mhs.nim ASC");
-         $this->query = $this->db_2->query("SELECT * FROM absen_mtk, jadual, mtk WHERE absen_mtk.id_jadual = jadual.id_jadual AND jadual.id_mtk = mtk.id_mtk AND absen_mtk.id_jadual = '".$id_jadual."' and absen_mtk.status != 0  ORDER BY absen_mtk.id_absen ASC");
+         $this->query = $this->db_2->query("SELECT *, TIMEDIFF(absen_mtk.waktu_selesai,absen_mtk.waktu_input) as x FROM absen_mtk, jadual, mtk WHERE absen_mtk.id_jadual = jadual.id_jadual AND jadual.id_mtk = mtk.id_mtk AND absen_mtk.id_jadual = '".$id_jadual."' and absen_mtk.status != 0  ORDER BY absen_mtk.id_absen ASC");
         if($this->query->num_rows >0){
             return $this->query;   
             }else{
             return NULL;
         }
-
     }  
 
      function tampil_absen_mhs(){
