@@ -437,9 +437,8 @@ function mahasiswa_edit_ak(){
 		}
 	}
 
-	//RPS Dari Prodi
-		function tampilkan_jadual()
-		{
+	//Melihat data matakuliah yg sudah di input absen dan rps realisasi untuk bagian akademik
+	function tampilkan_jadual()	{
 				  $data['title'] = 'Absensi';
 		          $data['description'] = 'Absensi';
 		          $data['keywords'] = 'Absensi Matakuliah';
@@ -453,10 +452,26 @@ function mahasiswa_edit_ak(){
 											(0, 1, 'menu_admin_elearning_dosen');
 					$this->load->view('e_dosen/_layout',$data);	
 			//===============
-		}
+	}
+
+		//Melihat data matakuliah yg sudah di input absen dan rps realisasi untuk bagian mutu_pusdata
+	function tampilkan_jadual_mutu()	{
+				  $data['title'] = 'Absensi';
+		          $data['description'] = 'Absensi';
+		          $data['keywords'] = 'Absensi Matakuliah';
+		          $data['record'] = $this->absensi_model->get_jadual_mtk();
+				 //$data['biodata'] =$this->e_dosen_model->get_biodata_dosen($this->session->userdata('user_id'));
+		          //$data['jadwal_mengajar'] =$this->e_dosen_model->get_jadwal_mengajar_dosen($this->session->userdata('nama_asli'));
+
+					//isi konten
+					$data['isicontent'] = 'absensi/lihat_jadual_mutu';
+					$data['menu_header'] = $this->menu_otomatis->create_menu_admin
+											(0, 1, 'menu_admin_elearning_dosen');
+					$this->load->view('e_dosen/_layout',$data);	
+			//===============
+	}
 
 	//detail jadual RPS dan absen
-
 	function absen_detail(){
 				$id_jadual	= $this->uri->segment(3);
 				  $data['title'] = 'Absensi';
@@ -471,6 +486,23 @@ function mahasiswa_edit_ak(){
 											(0, 1, 'menu_admin_elearning_dosen');
 				  $this->load->view('e_dosen/_layout',$data);	
 	}
+
+	//Mutu Melihat rekap dosen mengajar
+	function absen_detail_mutu(){
+				$id_jadual	= $this->uri->segment(3);
+				  $data['title'] = 'Absensi';
+		          $data['description'] = 'Absensi';
+		          $data['keywords'] = 'Absensi Matakuliah';
+		          $data['record'] = $this->absensi_model->absensi_detail($id_jadual);
+					//$data['biodata'] =$this->e_dosen_model->get_biodata_dosen($this->session->userdata('user_id'));
+		        	//$data['jadwal_mengajar'] =$this->e_dosen_model->get_jadwal_mengajar_dosen($this->session->userdata('nama_asli'));
+					//isi konten
+				  $data['isicontent'] = 'absensi/absen_rps_mutu';
+				  $data['menu_header'] = $this->menu_otomatis->create_menu_admin
+											(0, 1, 'menu_admin_elearning_dosen');
+				  $this->load->view('e_dosen/_layout',$data);	
+	}
+
 	
 	// buat nampil absen mahasiswa di login mahasiswa
 	function tampil_absen_mhs(){
@@ -486,6 +518,20 @@ function mahasiswa_edit_ak(){
 											(0, 1, 'menu_admin_elearning_dosen');
 				  $this->load->view('e_dosen/_layout',$data);	
 	}
+
+	        function rekap_mhs_absensi()
+		{
+			
+        	  $id_jadual = $this->uri->segment(3);
+	   		  $data['title'] = 'E Learning Mahasiswa';
+	          $data['description'] = 'E Learning Mahasiswa';
+	          $data['keywords'] = 'e learning, mhs, mahasiswa stmi, stmi';
+	         $data['absensi']=$this->absensi_model->rekap_absen_mhs($id_jadual);
+	          //isi konten
+	          $data['isicontent'] = 'absensi/_rekap_absen_mhs';
+	          $this->load->view('mhs/_layout',$data);																				
+
+        } 
 	
 
 	}
