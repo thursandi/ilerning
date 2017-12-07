@@ -39,6 +39,7 @@
                                         <th>Mata Kuliah</th>
                                         <th>Waktu Mulai</th>
                                         <th>Waktu Selesai</th>
+                                        <th>Durasi</th>
                                         <th>Materi</th>
                                         <th>Operasi</th>
                                       </tr>
@@ -53,6 +54,7 @@ echo "
         <td>$r->nama</td>
         <td>$r->waktu_input</td>
         <td>$r->waktu_selesai</td>
+        <td>$r->x</td>
         <td>$r->materi</td>
         
     <td  >".anchor('absensi/mahasiswa_edit_ak/'.$r->id_jadual.'/'.$r->id_absen,'Edit Absen Mahasiswa')." | 

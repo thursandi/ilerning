@@ -115,13 +115,12 @@ class Absensi_model extends CI_Model {
     function absensi_detail($id_jadual){
     //return $this->db->get('mhs');
     //$this->query = $this->db_2->query("SELECT * FROM absen_mtk_detail_mhs, mhs WHERE absen_mtk_detail_mhs.nim = mhs.nim AND absen_mtk_detail_mhs.id_absen = '".$id_absen."' ORDER BY absen_mtk_detail_mhs.nim ASC");
-         $this->query = $this->db_2->query("SELECT * FROM absen_mtk, jadual, mtk WHERE absen_mtk.id_jadual = jadual.id_jadual AND jadual.id_mtk = mtk.id_mtk AND absen_mtk.id_jadual = '".$id_jadual."' and absen_mtk.status != 0  ORDER BY absen_mtk.id_absen ASC");
+         $this->query = $this->db_2->query("SELECT *, TIMEDIFF(absen_mtk.waktu_selesai,absen_mtk.waktu_input) as x FROM absen_mtk, jadual, mtk WHERE absen_mtk.id_jadual = jadual.id_jadual AND jadual.id_mtk = mtk.id_mtk AND absen_mtk.id_jadual = '".$id_jadual."' and absen_mtk.status != 0  ORDER BY absen_mtk.id_absen ASC");
         if($this->query->num_rows >0){
             return $this->query;   
             }else{
             return NULL;
         }
-
     }  
 
      function tampil_absen_mhs(){
@@ -153,7 +152,11 @@ k.thn_akademik = '2017' and k.periode = '1' and k.status = 1 and j.id_ruangan = 
                                           jadual.periode, 
                                           mtk.id_mtk, 
                                           krs.semester, 
-                                          krs.thn_akademik
+                                          krs.thn_akademik,
+					  
+					  COUNT(CASE WHEN absen_mtk_detail_mhs.status_absen = 1 THEN absen_mtk_detail_mhs.status_absen else null end)
+                                        / COUNT(absen_mtk_detail_mhs.nim)
+                                        * 100 as pers
 
                                      FROM `absen_mtk`, absen_mtk_detail_mhs,jadual, mtk, krs
                                      
