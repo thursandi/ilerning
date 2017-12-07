@@ -195,7 +195,7 @@ function edit_rps_realisasi(){
 			$date_selesai = date('Y-m-d H:i:s',strtotime('+ 225 minute'));
 
 			//$data=array('id_jadual'=>$id_jadual,'waktu_input'=>$date,'id_dosen'=>$this->session->userdata('user_id'));
-			$data=array('id_jadual'=>$id_jadual,'waktu_input'=>$date,'id_dosen'=>$id_dosen,'waktu_selesai'=>$date_selesai);
+			$data=array('id_jadual'=>$id_jadual,'waktu_input'=>$date,'id_dosen'=>$id_dosen,'waktu_selesai'=>$date_selesai,'last_update' => $date,'user_update' => $this->session->userdata('user_id'));
 
 
 			$this->db_2->insert('absen_mtk',$data);
@@ -334,7 +334,18 @@ function mahasiswa_edit_ak(){
 					);
 
 			$this->db_2->update('absen_mtk_detail_mhs', array('status_absen' => $absen) , $data);
-		}						
+		}
+
+		//last update & id_user
+		$date = date('Y-m-d	H:i:s');
+		$id_user = $this->session->userdata('user_id');
+		$data = array(
+						'last_update' => $date, 
+						'user_update' => $id_user);
+
+		$this->db_2->update('absen_mtk', $data, array('id_absen' =>  $id_absen));
+		//=============================================
+
 		
 		redirect('absensi/mahasiswa_edit/'.$id_jadual.'/'.$id_absen);
 
