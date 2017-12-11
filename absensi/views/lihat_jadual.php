@@ -7,7 +7,7 @@
                <div class="span12">
                   <!-- BEGIN PAGE TITLE & BREADCRUMB-->
                    <h3 class="page-title">
-                      Mata Kuliah Aktif
+                      Mata Kuliah 
                   </h3>
                    <ul class="breadcrumb">
                        <li>
@@ -27,7 +27,7 @@
                <div class="span12">
                   <div class="widget">
                         <div class="widget-title">
-                           <h4><i class="icon-user"></i>&nbsp;Mata Kuliah Aktif</h4>
+                           <h4><i class="icon-user"></i>&nbsp;Mata Kuliah </h4>
                            <span class="tools">
                            <a href="javascript:;" class="icon-chevron-down"></a>
                            </span>                    
@@ -74,7 +74,7 @@ $no++;
 ?>
                                   </tbody>
                               </table>
-
+      
                         </div>
                   </div>
                </div>

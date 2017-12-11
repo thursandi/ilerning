@@ -52,7 +52,7 @@
                                     <th>Terlambat</th>
                                     <th>Tanpa Keterangan</th>
                                     <th>Jumlah Absensi keseluruhan</th>
-				    <th>Presntase Kehadiran</th>	
+                                     <th>Presntase Kehadiran</th> 
                                     <th>Detail Absensi</th>
                                 </tr>
                             </thead>
@@ -79,7 +79,7 @@
                                 echo "<td>".$row->jml_terlambat."</td>";
                                 echo "<td>".$row->jml_alfa."</td>";
                                 echo "<td>".$row->jml."</td>";
-				echo "<td>".floor($row->pers)."<sub>%</sub></td>";      
+                                echo "<td>".floor($row->pers)."<sub>%</sub></td>";     
                                 echo "<td>".anchor('absensi/mhs_absensi/mhs_absensi_detail/'.$row->id_jadual,'Lihat Detail')."</td>";
                                 echo "</tr>";
                               }

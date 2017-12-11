@@ -115,7 +115,7 @@ function checkAlphaNumeric(e) {
 <?php
 echo form_open('absensi/simpan_absen_edit_ak/'.$record2->id_jadual);
 ?>
-<input class="form-control" type="text" name="id_absen"   value="<?php echo $record2->id_absen; ?>" readonly/>
+<input class="form-control" type="hidden" name="id_absen"   value="<?php echo $record2->id_absen; ?>" readonly/>
                               <table class="table table-striped table-bordered table-hover" id="">
                                   <thead style="vertical-align:center;">
                                       <tr>
@@ -141,6 +141,13 @@ echo "
     }
       echo "> Masuk </td>";
 
+    echo "  <td > <input type= 'radio' name='jurusan[".$i."]' value='5' ";
+    if($r->status_absen == '5'){
+      echo "checked"; 
+    }
+      echo "> Alfa </td>";        
+
+
     echo "  <td > <input type= 'radio' name='jurusan[".$i."]' value='2' ";
     if($r->status_absen == '2'){
       echo "checked"; 
@@ -158,12 +165,6 @@ echo "
       echo "checked"; 
     }
       echo "> Terlambat </td>";
-
-    echo "  <td > <input type= 'radio' name='jurusan[".$i."]' value='5' ";
-    if($r->status_absen == '5'){
-      echo "checked"; 
-    }
-      echo "> Tanpa Keterangan </td>";        
 
     
 echo "</tr>";
@@ -189,11 +190,7 @@ $i++;
                               </table>
                         </div>
 
-
-              
-
 <table style="margin:30px 0 50px 80px;width:100%;">
-
   <tr>
     <td> <button type="submit"  style="background-color:red;" class="btn btn-primary blue"  ><i class="icon-lock"></i>  SIMPAN</button></td>
     <td>   <?php echo anchor('absensi/absen_detail/'.$id_jadual,'Kembali',array('class'=> 'btn btn-primary blue','style'=>'background-color:blue'));?>
