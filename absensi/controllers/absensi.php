@@ -7,7 +7,6 @@
 		
 		function __construct()
 		{
-			# code...
 			parent::__construct();
 /*
 
@@ -148,7 +147,20 @@ function edit_rps_realisasi(){
 						'id_absen'   => $id_absen,
 						);
 		$this->db_2->update('absen_mtk', array('materi' => $materi ),$data);
+
+		//last update & id_user
+		$date = date('Y-m-d	H:i:s');
+		$id_user = $this->session->userdata('user_id');
+		$data = array(
+						'last_update' => $date, 
+						'user_update' => $id_user);
+		$this->db_2->update('absen_mtk', $data, array('id_absen' =>  $id_absen));
+		//=============================================
+						
+
 		redirect('absensi/absen_detail/'.$id_jadual);
+
+
 
 }
 
@@ -195,12 +207,14 @@ function edit_rps_realisasi(){
 			$date_selesai = date('Y-m-d H:i:s',strtotime('+ 225 minute'));
 
 			//$data=array('id_jadual'=>$id_jadual,'waktu_input'=>$date,'id_dosen'=>$this->session->userdata('user_id'));
-			$data=array('id_jadual'=>$id_jadual,'waktu_input'=>$date,'id_dosen'=>$id_dosen,'waktu_selesai'=>$date_selesai,'last_update' => $date,'user_update' => $this->session->userdata('user_id'));
-
+			//$data=array('id_jadual'=>$id_jadual,'waktu_input'=>$date,'id_dosen'=>$id_dosen,'waktu_selesai'=>$date_selesai);
+			$data=array('id_jadual'=>$id_jadual,'waktu_input'=>$date,'id_dosen'=>$id_dosen,'waktu_selesai'=>$date_selesai,
+			'last_update' => $date,'user_update' => $this->session->userdata('user_id'));
 
 			$this->db_2->insert('absen_mtk',$data);
 		//	redirect('rps/post');
 			}
+
 			
 	//mengambil id absen yang status nya 0
 	$data['record2'] = $this->db_2->query("SELECT max(id_absen) as id_absen, id_jadual FROM `absen_mtk` WHERE id_jadual = '".$id_jadual."' AND status = 0 ")->row_array();
@@ -244,7 +258,7 @@ function simpan_absen(){
 							'status_absen' => $absen 
 					);
 
-			$this->db_2->insert('absen_mtk_detail_mhs',$data);
+				$this->db_2->insert('absen_mtk_detail_mhs',$data);
 		}						
 		
 		redirect('absensi/rps_realisasi/'.$id_jadual);
@@ -342,10 +356,9 @@ function mahasiswa_edit_ak(){
 		$data = array(
 						'last_update' => $date, 
 						'user_update' => $id_user);
-
 		$this->db_2->update('absen_mtk', $data, array('id_absen' =>  $id_absen));
 		//=============================================
-
+						
 		
 		redirect('absensi/mahasiswa_edit/'.$id_jadual.'/'.$id_absen);
 
@@ -376,6 +389,16 @@ function mahasiswa_edit_ak(){
 
 			$this->db_2->update('absen_mtk_detail_mhs', array('status_absen' => $absen) , $data);
 		}						
+
+		//last update & id_user
+		$date = date('Y-m-d	H:i:s');
+		$id_user = $this->session->userdata('user_id');
+		$data = array(
+						'last_update' => $date, 
+						'user_update' => $id_user);
+		$this->db_2->update('absen_mtk', $data, array('id_absen' =>  $id_absen));
+		//=============================================
+						
 		
 		redirect('absensi/mahasiswa_edit_ak/'.$id_jadual.'/'.$id_absen);
 
@@ -430,7 +453,6 @@ function mahasiswa_edit_ak(){
  			}elseif($q->waktu_selesai > date('Y-m-d H:i:s')){
  				$waktu_selesai = date('Y-m-d H:i:s');
  			}
-
  			//------------------------
 			$data = array(//yang ini buat data nya
 						'waktu_selesai' => $waktu_selesai,
@@ -448,9 +470,8 @@ function mahasiswa_edit_ak(){
 		}
 	}
 
-	//RPS Dari Prodi
-		function tampilkan_jadual()
-		{
+	//Melihat data matakuliah yg sudah di input absen dan rps realisasi untuk bagian akademik
+	function tampilkan_jadual()	{
 				  $data['title'] = 'Absensi';
 		          $data['description'] = 'Absensi';
 		          $data['keywords'] = 'Absensi Matakuliah';
@@ -464,10 +485,26 @@ function mahasiswa_edit_ak(){
 											(0, 1, 'menu_admin_elearning_dosen');
 					$this->load->view('e_dosen/_layout',$data);	
 			//===============
-		}
+	}
+
+		//Melihat data matakuliah yg sudah di input absen dan rps realisasi untuk bagian mutu_pusdata
+	function tampilkan_jadual_mutu()	{
+				  $data['title'] = 'Absensi';
+		          $data['description'] = 'Absensi';
+		          $data['keywords'] = 'Absensi Matakuliah';
+		          $data['record'] = $this->absensi_model->get_jadual_mtk();
+				 //$data['biodata'] =$this->e_dosen_model->get_biodata_dosen($this->session->userdata('user_id'));
+		          //$data['jadwal_mengajar'] =$this->e_dosen_model->get_jadwal_mengajar_dosen($this->session->userdata('nama_asli'));
+
+					//isi konten
+					$data['isicontent'] = 'absensi/lihat_jadual_mutu';
+					$data['menu_header'] = $this->menu_otomatis->create_menu_admin
+											(0, 1, 'menu_admin_elearning_dosen');
+					$this->load->view('e_dosen/_layout',$data);	
+			//===============
+	}
 
 	//detail jadual RPS dan absen
-
 	function absen_detail(){
 				$id_jadual	= $this->uri->segment(3);
 				  $data['title'] = 'Absensi';
@@ -482,8 +519,26 @@ function mahasiswa_edit_ak(){
 											(0, 1, 'menu_admin_elearning_dosen');
 				  $this->load->view('e_dosen/_layout',$data);	
 	}
+
+	//Mutu Melihat rekap dosen mengajar
+	function absen_detail_mutu(){
+				$id_jadual	= $this->uri->segment(3);
+				  $data['title'] = 'Absensi';
+		          $data['description'] = 'Absensi';
+		          $data['keywords'] = 'Absensi Matakuliah';
+		          $data['record'] = $this->absensi_model->absensi_detail($id_jadual);
+					//$data['biodata'] =$this->e_dosen_model->get_biodata_dosen($this->session->userdata('user_id'));
+		        	//$data['jadwal_mengajar'] =$this->e_dosen_model->get_jadwal_mengajar_dosen($this->session->userdata('nama_asli'));
+					//isi konten
+				  $data['isicontent'] = 'absensi/absen_rps_mutu';
+				  $data['menu_header'] = $this->menu_otomatis->create_menu_admin
+											(0, 1, 'menu_admin_elearning_dosen');
+				  $this->load->view('e_dosen/_layout',$data);	
+	}
+
 	
 	// buat nampil absen mahasiswa di login mahasiswa
+/*
 	function tampil_absen_mhs(){
 				  $data['title'] = 'Absensi';
 		          $data['description'] = 'Absensi';
@@ -497,7 +552,21 @@ function mahasiswa_edit_ak(){
 											(0, 1, 'menu_admin_elearning_dosen');
 				  $this->load->view('e_dosen/_layout',$data);	
 	}
-	
+*/
+	        function rekap_mhs_absensi()
+		{
+			  
+			  $id_jadual = $this->uri->segment(3);
+	   		  $data['title'] = 'E Learning Mahasiswa';
+	          $data['description'] = 'E Learning Mahasiswa';
+	          $data['keywords'] = 'e learning, mhs, mahasiswa stmi, stmi';
+   	          $data['absensi']=$this->absensi_model->rekap_absen_mhs($id_jadual);
+	          //isi konten
+	          $data['isicontent'] = 'absensi/_rekap_absen_mhs';
+	          $this->load->view('mhs/_layout',$data);																				
+
+        }
+
 
 	}
 
