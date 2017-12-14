@@ -303,7 +303,13 @@ class E_dosen_model extends CI_Model {
                 $wk_input = $cek->row()->waktu_input;
                 //date('Y-m-d H:i:s',strtotime('+225 minute',strtotime($waktu_input)));
                 if($wk_selesai < date('Y-m-d H:i:s')){
-                    //update 
+                    //update jadual.akademik_validasi
+                    $where = array('id_jadual' => $cek->row()->id_jadual);
+                    $data_up =  array('akademik_validasi' => 0 );
+                    $this->db_2->update('jadual', $data_up, $where);
+                    //-------------------------------
+			
+		    //update 
                     $waktu_selesai = date('Y-m-d H:i:s',strtotime('+30 minute',strtotime($wk_input)));
                     $data = array('status'=>1,'waktu_selesai'=>$waktu_selesai);
                     $this->db_2->where(array('id_dosen'=>$id_dosen,'status'=>0));
