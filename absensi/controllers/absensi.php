@@ -462,8 +462,14 @@ function mahasiswa_edit_ak(){
 			/*echo $data['id_jadual']."<br>";
 			echo $data['id_dosen']."<br>";*/
 			$this->db_2->update('absen_mtk', $data, array('status' => 0,'id_dosen'=>$id_dosen,'id_jadual'=>$id_jadual));
-			redirect('e_dosen/biodata'); 
-					
+			
+
+			//update akademik_validasi kan
+					$where = array('id_jadual' => $id_jadual);
+                    $data_up =  array('akademik_validasi' => 0 );
+                    $this->db_2->update('jadual', $data_up, $where);
+			//-----------
+			redirect('e_dosen/biodata');		
 		}else{
 			
 			redirect('absensi/mahasiswa/'.$id_jadual);
@@ -567,6 +573,29 @@ function mahasiswa_edit_ak(){
 
         }
 
+        function akademik_validasi_aktif()
+        {
+        	//$data['akademik_validasi'] = $this->absensi_model->get_akademik_validasi();
+        	
+        }
+
+        function aktifkan_mtk($id_jadual)
+        {
+        	$where = array('id_jadual' => $id_jadual);
+        	$data = array('akademik_validasi' => 1 );
+
+        	$this->db_2->update('jadual', $data, $where);
+        	redirect('e_dosen/nilai_belum_diinput');
+        }
+
+        function non_aktifkan_mtk($id_jadual)
+        {
+        	$where = array('id_jadual' => $id_jadual);
+        	$data = array('akademik_validasi' => 0 );
+
+        	$this->db_2->update('jadual', $data, $where);
+        	redirect('e_dosen/nilai_belum_diinput');
+        }
 
 	}
 
