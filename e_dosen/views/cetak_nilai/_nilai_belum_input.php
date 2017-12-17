@@ -49,6 +49,7 @@
                                   <th>Thn Akademik</th>
                                   <th>Periode</th>
 								  <th>Status</th>
+                                 <th>Aktif Matakuliah</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -68,6 +69,14 @@ foreach($nilai_belum_input->result() as $row)
                                     <td><?php echo $row->thn_akademik; ?></td>
                                     <td><?php echo $row->periode; ?></td>
 									<td><?php echo ($row->id_status==0) ?  'Terbuka' : 'Belum Pernah Diinput' ;?></td>
+                                    <td>
+                                      <?php if($row->akademik_validasi == 0){
+                                                echo anchor( 'absensi/aktifkan_mtk/'.$row->id_jadual,'aktifkan');
+                                            }else{
+                                                echo '<a style="color:red" href="../absensi/non_aktifkan_mtk/'.$row->id_jadual.'">Non Aktifkan</a>';
+                                            }  
+                                      ?>
+                                    </td>
                                 </tr>
 
 <?php 
