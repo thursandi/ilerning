@@ -309,6 +309,14 @@ class E_dosen_model extends CI_Model {
                     $this->db_2->update('jadual', $data_up, $where);
                     //-------------------------------
 
+                    //update rps apabila kosong
+                    if($cek->row()->materi == ''){
+                        $w  = array('id_dosen'=>$id_dosen,'status'=>0);
+                        $dt = array('materi' => '-');
+                        $this->db_2->update('absen_mtk', $dt, $w);   
+                    }
+                    //-------------------------
+
                     //update 
                     $waktu_selesai = date('Y-m-d H:i:s',strtotime('+30 minute',strtotime($wk_input)));
                     $data = array('status'=>1,'waktu_selesai'=>$waktu_selesai);
