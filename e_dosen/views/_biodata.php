@@ -147,22 +147,44 @@ foreach($jadwal_mengajar->result() as $row)
                                 <tr class="odd gradeX">
                                     <td><?php echo $i; ?></td>
                                     <?php
-                                        if($mtk_aktif->num_rows == 0){
+                                        if($row->akademik_validasi > 0){
 
-                                          echo "<td>".anchor( 'absensi/mahasiswa/'.$row->id_jadual,$row->nama)."</td>";
+                                          if(strpos($row->nama,"Praktikum") === False){
 
+                                            
+                                            echo "<td>".anchor( 'absensi/mahasiswa/'.$row->id_jadual,$row->nama)."</td>";
+                                            
+                                          }else{
+                                            //cek apakah mtk_teori dh selesai
+                                            if($aktif_teori->num_rows > 1){
+                                                echo "<td style='color:red'>".$row->nama."</td>";   
+                                            }else{
+                                                echo "<td>".anchor( 'absensi/mahasiswa/'.$row->id_jadual,$row->nama)."</td>";
+                                            }
+                                            //--------------------------------
+
+                                            
+                                            
+                                          }
+
+                                        
                                         }else{
+                                          
+                                          /*if($mtk_aktif->num_rows > 0){
 
-                                          if($mtk_aktif->row()->id_jadual == $row->id_jadual){
+                                            if($mtk_aktif->row()->id_jadual == $row->id_jadual){
 
                                               echo "<td>".anchor( 'absensi/mahasiswa/'.$row->id_jadual,$row->nama)."</td>";
 
-                                          }else{
+                                            }else{
 
-                                              echo "<td>".$row->nama."</td>";
-                                          }
+                                                echo "<td>".$row->nama."</td>";
+                                            }
 
-                                          
+
+                                          }*/
+
+                                          echo "<td>".$row->nama."</td>";                                         
                                         }
                                     ?>            
                                     
