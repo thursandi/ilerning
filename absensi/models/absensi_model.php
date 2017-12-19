@@ -160,10 +160,10 @@ class Absensi_model extends CI_Model {
                                           krs.semester, 
                                           krs.thn_akademik,
               
-                                        COUNT(CASE WHEN absen_mtk_detail_mhs.status_absen = 1 THEN absen_mtk_detail_mhs.status_absen  
-                       				   when absen_mtk_detail_mhs.status_absen = 2 THEN absen_mtk_detail_mhs.status_absen 
-                       			           when absen_mtk_detail_mhs.status_absen = 3 THEN absen_mtk_detail_mhs.status_absen else 
-                       				   null end)
+            COUNT(CASE WHEN absen_mtk_detail_mhs.status_absen = 1 THEN absen_mtk_detail_mhs.status_absen  
+                       when absen_mtk_detail_mhs.status_absen = 2 THEN absen_mtk_detail_mhs.status_absen 
+                       when absen_mtk_detail_mhs.status_absen = 3 THEN absen_mtk_detail_mhs.status_absen else 
+                       null end)
                                         / COUNT(absen_mtk_detail_mhs.nim)
                                         * 100 as pers
 
