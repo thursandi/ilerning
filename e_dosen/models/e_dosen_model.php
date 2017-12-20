@@ -295,6 +295,8 @@ class E_dosen_model extends CI_Model {
 
         //query update mtk aktif jika waktu selesai < now
             $cek =  $this->db_2->get_where('absen_mtk',array('status'=> 0, 'id_dosen' => $id_dosen));
+
+            
             
             if($cek->num_rows != 0){
                 
@@ -302,28 +304,34 @@ class E_dosen_model extends CI_Model {
                 //$waktu_aktif = $wk_selesai;
                 $wk_input = $cek->row()->waktu_input;
                 //date('Y-m-d H:i:s',strtotime('+225 minute',strtotime($waktu_input)));
+
+                //query cek detai absen mhs
+                $cek_detail_mhs = $this->db_2->get_where('absen_mtk_detail_mhs',array('id_absen' => $cek->row()->id_absen));
+
                 if($wk_selesai < date('Y-m-d H:i:s')){
-                    //update jadual.akademik_validasi
-                    $where = array('id_jadual' => $cek->row()->id_jadual);
-                    $data_up =  array('akademik_validasi' => 0 );
-                    $this->db_2->update('jadual', $data_up, $where);
-                    //-------------------------------
-
-                    //update rps apabila kosong
-                    if($cek->row()->materi == ''){
-                        $w  = array('id_dosen'=>$id_dosen,'status'=>0);
-                        $dt = array('materi' => '-');
-                        $this->db_2->update('absen_mtk', $dt, $w);   
-                    }
-                    //-------------------------
-
-                    //update 
-                    $waktu_selesai = date('Y-m-d H:i:s',strtotime('+30 minute',strtotime($wk_input)));
-                    $data = array('status'=>1,'waktu_selesai'=>$waktu_selesai);
-                    $this->db_2->where(array('id_dosen'=>$id_dosen,'status'=>0));
-                    $this->db_2->update('absen_mtk',$data);
-
                     
+                    //update apa bila terdapat data didalam tabel absen_mtk_detail_mhs
+                    if($cek_detail_mhs->num_rows != 0){
+                         
+                        //update jadual.akademik_validasi
+                        $where = array('id_jadual' => $cek->row()->id_jadual);
+                        $data_up =  array('akademik_validasi' => 0 );
+                        $this->db_2->update('jadual', $data_up, $where);
+                        //-------------------------------
+
+                        //update rps apabila kosong
+                        if($cek->row()->materi == ''){
+                            $w  = array('id_dosen'=>$id_dosen,'status'=>0);
+                            $dt = array('materi' => '-');
+                            $this->db_2->update('absen_mtk', $dt, $w);   
+                        }
+                        //-------------------------
+
+                        $waktu_selesai = date('Y-m-d H:i:s',strtotime('+30 minute',strtotime($wk_input)));
+                        $data = array('status'=>1,'waktu_selesai'=>$waktu_selesai);
+                        $this->db_2->where(array('id_dosen'=>$id_dosen,'status'=>0));
+                        $this->db_2->update('absen_mtk',$data);
+                    }
                 }
 
             }                 
