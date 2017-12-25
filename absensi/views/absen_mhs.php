@@ -115,7 +115,7 @@ function checkAlphaNumeric(e) {
 <?php
 echo form_open('absensi/simpan_absen/'.$record2['id_jadual']);
 ?>
-<input class="form-control" type="text" name="id_absen"   value="<?php echo $record2['id_absen']; ?>" readonly/>
+<input class="form-control" type="hidden" name="id_absen"   value="<?php echo $record2['id_absen']; ?>" readonly/>
                               <table class="table table-striped table-bordered table-hover" id="">
                                   <thead style="vertical-align:center;">
                                       <tr>

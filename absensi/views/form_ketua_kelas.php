@@ -7,7 +7,7 @@
                <div class="span12">
                   <!-- BEGIN PAGE TITLE & BREADCRUMB-->
                    <h3 class="page-title">
-                      RPS Realisasi
+                      Form Ketua Kelas
                   </h3>
                    <ul class="breadcrumb">
                        <li>
@@ -26,7 +26,7 @@
                <div class="span12">
                   <div class="widget">
                         <div class="widget-title">
-                           <h4><i class="icon-user"></i>RPS Realisasi</h4>
+                           <h4><i class="icon-user"></i>Form Ketua Kelas</h4>
                            <span class="tools">
                            <a href="javascript:;" class="icon-chevron-down"></a>
                            </span>                    
@@ -35,82 +35,70 @@
                          <!-- FORM -->
                         <div class="widget-body form">
                       <?php
-echo form_open('absensi/simpan_rps_realisasi/'.$id_jadual);
+echo form_open('absensi/simpan_ketua_kelas/'.$id_jadual);
 ?>
-                                    <div class="control-group">
-                                        <!-- <label for="old_password">Old Password</label> -->
-                                        
-                                        <label for="Materi Kuliah" class="control-label">   
-                                Materi Kuliah 
-                                        </label>
-                                        <div class="controls">
-                                            <textarea  name="materi"   size="30" class="span6"  /> </textarea><br>
-                                        </div>
-                                    </div>
-                                      <div class="control-group">
-                                        <div class="controls">
-                                            <button type="submit" class="btn">Simpan Realisasi RPS</button>
-                                        </div>
-                                    </div>
-                                </form> 
-
+                                  
+                                
+                               <table class="table table-bordered " id="">
+                                <tr>
+                                	<td>Nim</td>
+                                	<td>	<input class="form-control" type="text" name="nim" placeholder = 'Masukan NIM'/>
+                                </td>
+                                </tr>
+                                <tr>
+                                <td>&nbsp;</td>
+                                	<td> <button type="submit" class="btn">Simpan Ketua Kelas</button></td>
+                                </tr>	
+                                </table>
                         </div>
-                        <!-- FORM -->
+                        </form> 
                             
                             <div class="space5"></div>
                         </div>
                   </div>
                </div>
      
-
             <!-- BEGIN PAGE CONTENT-->
             <div class="row-fluid">
                <div class="span12">
                   <div class="widget">
                         <div class="widget-title">
-                           <h4><i class="icon-user"></i>&nbsp;Realisasi RPS</h4>
+                           <h4><i class="icon-user"></i>&nbsp;Biodata Ketua Kelas</h4>
                            <span class="tools">
                            <a href="javascript:;" class="icon-chevron-down"></a>
                            </span>                    
                         </div>
                         <div class="widget-body">
-                         <table class="table table-striped table-bordered table-hover" id="">
+                      <table class="table table-striped table-bordered table-hover" id="">
                                   <thead>
                                       <tr>
-                                        <th>Pertemuan</th>
-                                        <th>Waktu Input</th>
-                                        <th>Waktu Selesai</th>
-                                        <th>Materi</th>
+                                        <th>Nim</th>
+                                        <th>Nama</th>
+                                        <th>No Telpon</th>
+                                        <th>Alamat</th>
                                       </tr>
                                   </thead>
                                   <tbody>
                               <?php
+if ($record == null ) {
+  
+}else{
 $no = 1;
 foreach ($record->result() as $r ) {
 echo "
     <tr>
-        <td width='10'>$no</td>
-        <td>$r->waktu_input</td>
-        <td>$r->waktu_selesai2</td>
-        <td>$r->materi</td>
+        <td>$r->nim</td>
+        <td>$r->nama</td>
+        <td>$r->hp</td>
+        <td>$r->alamat</td>
     </tr>
 ";
 $no++;
 }
+}
 ?>
-<tr>
-    <td colspan="3" align="left">   <?php echo anchor('absensi/mahasiswa/'.$id_jadual,'Kembali',array('class'=> 'btn btn-primary blue','style'=>'background-color:blue'));?>
-
-    <?php
-      if(isset($salah )){
-        echo "<span color=red>Isi rps terlebih dahulu</span>";
-      }
-    ?>
-    <td  align="left">   <?php echo anchor('absensi/selesai/'.$id_jadual,'Selesai Mata Kuliah',array('class'=> 'btn btn-primary blue','style'=>'background-color:green'));?>
-
     
 
-</tr>
                                   
                                   </tbody>
                               </table>
