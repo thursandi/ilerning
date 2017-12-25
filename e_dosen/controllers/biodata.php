@@ -50,11 +50,18 @@ class Biodata extends CI_Controller
           $data['keywords'] = 'biodata dosen, stmi dosen';
 
           $data['biodata'] =$this->e_dosen_model->get_biodata_dosen($this->session->userdata('user_id'));
-          $data['jadwal_mengajar'] = $this->e_dosen_model->get_jadwal_mengajar_dosen($this->session->userdata('nama_asli'));
-
+          
           //cek matkul yg sedang berlangsung
           $data['mtk_aktif'] = $this->e_dosen_model->mtk_aktif($this->session->userdata('nama_asli'));
           //================================
+
+          //teori_aktif
+          $data['aktif_teori']  = $this->e_dosen_model->get_teori_aktif();   
+          //------- 
+
+          $data['jadwal_mengajar'] = $this->e_dosen_model->get_jadwal_mengajar_dosen($this->session->userdata('nama_asli'));
+
+          
 
 
           //isi konten
