@@ -40,7 +40,7 @@ class E_dosen_model extends CI_Model {
     public function get_jadwal_mengajar_dosen($nama='')
     {
         $nama2 = str_replace("'","''", $nama);
-        $this->query = $this->db_2->query("SELECT A.id_mtk, A.id_jadual, B.nama, A.bobot_tugas, A.bobot_uts, A.bobot_uas, A.periode, A.thn_akademik, D.uraian as hari, D.id_hari, A.jam_mulai, A.jam_selesai, C.kelas, E.nama as ruangan
+        $this->query = $this->db_2->query("SELECT A.id_mtk, A.id_jadual, B.nama, A.bobot_tugas, A.bobot_uts, A.bobot_uas, A.periode, A.thn_akademik, D.uraian as hari, D.id_hari, A.jam_mulai, A.jam_selesai, C.kelas, E.nama as ruangan, A.akademik_validasi
             FROM jadual A, mtk B, krs C, mst_hari D, ruangan E
             WHERE A.id_mtk=B.id_mtk
             AND A.id_jadual=C.id_jadual
@@ -302,20 +302,68 @@ class E_dosen_model extends CI_Model {
                 //$waktu_aktif = $wk_selesai;
                 $wk_input = $cek->row()->waktu_input;
                 //date('Y-m-d H:i:s',strtotime('+225 minute',strtotime($waktu_input)));
-                if($wk_selesai < date('Y-m-d H:i:s')){
-                    //update 
-                    $waktu_selesai = date('Y-m-d H:i:s',strtotime('+30 minute',strtotime($wk_input)));
-                    $data = array('status'=>1,'waktu_selesai'=>$waktu_selesai);
-                    $this->db_2->where(array('id_dosen'=>$id_dosen,'status'=>0));
-                    $this->db_2->update('absen_mtk',$data);
-                }
 
+                //query cek detail mhs
+                $cek_detail_mhs = $this->db_2->get_where('absen_mtk_detail_mhs',array('id_absen' => $cek->row()->id_absen));
+
+                if($wk_selesai < date('Y-m-d H:i:s')){
+                    
+                    if($cek_detail_mhs->num_rows != 0){
+                        
+                        //update jadual.akademik_validasi
+                        $where = array('id_jadual' => $cek->row()->id_jadual);
+                        $data_up =  array('akademik_validasi' => 0 );
+                        $this->db_2->update('jadual', $data_up, $where);
+                        //-------------------------------
+
+                        //update rps apabila kosong
+                        if($cek->row()->materi == ''){
+                            $w  = array('id_dosen'=>$id_dosen,'status'=>0);
+                            $dt = array('materi' => '-');
+                            $this->db_2->update('absen_mtk', $dt, $w);   
+                        }
+                        //-------------------------
+
+                        //update 
+                        $waktu_selesai = date('Y-m-d H:i:s',strtotime('+30 minute',strtotime($wk_input)));
+                        $data = array('status'=>1,'waktu_selesai'=>$waktu_selesai);
+                        $this->db_2->where(array('id_dosen'=>$id_dosen,'status'=>0));
+                        $this->db_2->update('absen_mtk',$data);
+                    }
+
+
+
+
+                    /*//update 
+                    $waktu_selesai = date('Y-m-d H:i:s',strtotime('+30 minute',strtotime($wk_input)));
+                    //$data = array('status'=>1,'waktu_selesai'=>$waktu_selesai);
+                    $data = array('status'=>1,'waktu_selesai'=>$waktu_selesai,'materi'=>'-');
+                    $this->db_2->where(array('id_dosen'=>$id_dosen,'status'=>0));
+                    $this->db_2->update('absen_mtk',$data);*/
+                }
             }                 
         //----------------------                       
-
         $query = $this->db_2->get_where('absen_mtk',array('status'=> 0, 'id_dosen' => $id_dosen));
 
         return $query;
+    }
+
+    public function get_teori_aktif()
+    {
+       $id_dosen = $this->db_2->like('nama',$this->session->userdata('nama_asli'))
+                               ->get('dosen')
+                               ->row()
+                               ->id_dosen;
+
+
+       $data = array('akademik_validasi' => 1, 
+                     'id_dosen'          => $id_dosen   
+                    );
+
+       $query = $this->db_2->where($data)
+                           ->get('jadual');
+                               
+        return $query;                       
     }
   
 }
