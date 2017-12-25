@@ -12,9 +12,9 @@ class Absensi_model extends CI_Model {
     private $db_2;
 
 
-    public function get_rps()
+    public function get_rps($id_mtk)
     {
-        $this->query = $this->db_2->query("SELECT * FROM rps, rps_detil WHERE rps.id_rps = rps_detil.id_rps");
+        $this->query = $this->db_2->query("SELECT * FROM rps_detil, rps_list, mtk WHERE rps_detil.id_rps = rps_list.id_rps and rps_list.id_mtk = mtk.id_mtk  and rps_list.id_mtk = '".$id_mtk ."' ORDER BY rps_detil.minggu_ke asc" );
 
         if($this->query->num_rows >0){
             return $this->query;   
@@ -36,7 +36,8 @@ class Absensi_model extends CI_Model {
 
     public function get_rps_realisasi($id_jadual)
     {
-        $this->query = $this->db_2->query("SELECT * FROM absen_mtk where id_jadual = '".$id_jadual."'  ORDER by id_absen asc ");
+        $this->query = $this->db_2->query("SELECT *, IF(status = '0', '<font color= red > Sedang Berjalan ... </font>', waktu_Selesai ) as waktu_selesai2 FROM absen_mtk where id_jadual = '".$id_jadual."'  ORDER by id_absen asc ");
+
 
         if($this->query->num_rows >0){
             return $this->query;   
@@ -115,22 +116,31 @@ class Absensi_model extends CI_Model {
     function absensi_detail($id_jadual){
     //return $this->db->get('mhs');
     //$this->query = $this->db_2->query("SELECT * FROM absen_mtk_detail_mhs, mhs WHERE absen_mtk_detail_mhs.nim = mhs.nim AND absen_mtk_detail_mhs.id_absen = '".$id_absen."' ORDER BY absen_mtk_detail_mhs.nim ASC");
-         $this->query = $this->db_2->query("SELECT *, TIMEDIFF(absen_mtk.waktu_selesai,absen_mtk.waktu_input) as x FROM absen_mtk, jadual, mtk WHERE absen_mtk.id_jadual = jadual.id_jadual AND jadual.id_mtk = mtk.id_mtk AND absen_mtk.id_jadual = '".$id_jadual."' and absen_mtk.status != 0  ORDER BY absen_mtk.id_absen ASC");
+         $this->query = $this->db_2->query("SELECT *,kelas.nama AS nama_kelas, TIMEDIFF(absen_mtk.waktu_selesai,absen_mtk.waktu_input) as x, mtk.nama as nama_mtk, TIMEDIFF(jadual.jam_selesai,jadual.jam_mulai)  as durasi_sebenarnya  
+          FROM absen_mtk, jadual, mtk,kelas, dosen WHERE absen_mtk.id_jadual = jadual.id_jadual 
+          AND jadual.id_mtk = mtk.id_mtk 
+          AND jadual.id_kelas = kelas.id_kelas
+          AND absen_mtk.id_jadual = '".$id_jadual."' 
+          And absen_mtk.status != 0  
+          And dosen.id_dosen = absen_mtk.id_dosen  ORDER BY absen_mtk.id_absen ASC");
+
         if($this->query->num_rows >0){
             return $this->query;   
             }else{
             return NULL;
         }
+
     }  
 
+/*
      function tampil_absen_mhs(){
     //return $this->db->get('mhs');
     //$this->query = $this->db_2->query("SELECT * FROM absen_mtk_detail_mhs, mhs WHERE absen_mtk_detail_mhs.nim = mhs.nim AND absen_mtk_detail_mhs.id_absen = '".$id_absen."' ORDER BY absen_mtk_detail_mhs.nim ASC");
          $this->query = $this->db_2->query("SELECT k.id_krs,m.kd_mtk,m.nama as nama_mtk,m.sks,kls.nama as 
-nama_kelas,j.id_hari, time_format(j.jam_selesai,'%H:%i') AS jamselesai, m.praktikum, 
-r.nama as nama_ruang from krs k,jadual j, mtk m,kelas kls, ruangan r WHERE k.id_jadual = 
-j.id_jadual and j.id_mtk = m.id_mtk and kls.id_kelas = j.id_kelas and nim = '1715114' and 
-k.thn_akademik = '2017' and k.periode = '1' and k.status = 1 and j.id_ruangan = r.id_ruangan order by id_krs
+    nama_kelas,j.id_hari, time_format(j.jam_selesai,'%H:%i') AS jamselesai, m.praktikum,  
+      r.nama as nama_ruang from krs k,jadual j, mtk m,kelas kls, ruangan r WHERE k.id_jadual = 
+    j.id_jadual and j.id_mtk = m.id_mtk and kls.id_kelas = j.id_kelas and nim = '1715114' and 
+    k.thn_akademik = '2017' and k.periode = '1' and k.status = 1 and j.id_ruangan = r.id_ruangan order by id_krs
 ");
         if($this->query->num_rows >0){
             return $this->query;   
@@ -139,6 +149,7 @@ k.thn_akademik = '2017' and k.periode = '1' and k.status = 1 and j.id_ruangan = 
         }
 
     }
+    */
 
     function absen_mhs($nim)
     {
@@ -153,9 +164,11 @@ k.thn_akademik = '2017' and k.periode = '1' and k.status = 1 and j.id_ruangan = 
                                           mtk.id_mtk, 
                                           krs.semester, 
                                           krs.thn_akademik,
-					  
-					  COUNT(CASE WHEN absen_mtk_detail_mhs.status_absen = 1 THEN absen_mtk_detail_mhs.status_absen else null end)
-                                        / COUNT(absen_mtk_detail_mhs.nim)
+              
+                                       (COUNT(CASE WHEN absen_mtk_detail_mhs.status_absen = 1 THEN absen_mtk_detail_mhs.status_absen else null end) + 
+                                        COUNT(CASE WHEN absen_mtk_detail_mhs.status_absen = 2 THEN absen_mtk_detail_mhs.status_absen else null end) +
+                                        COUNT(CASE WHEN absen_mtk_detail_mhs.status_absen = 4 THEN absen_mtk_detail_mhs.status_absen else null end)
+                                        )/ COUNT(absen_mtk_detail_mhs.nim)
                                         * 100 as pers
 
                                      FROM `absen_mtk`, absen_mtk_detail_mhs,jadual, mtk, krs
@@ -190,7 +203,7 @@ function absen_mhs_detail($id_jadual, $nim ){
                                   WHEN absen_mtk_detail_mhs.status_absen = 2 THEN 'S'
                                   WHEN absen_mtk_detail_mhs.status_absen = 3 THEN 'I'
                                   WHEN absen_mtk_detail_mhs.status_absen = 4 THEN 'T'
-                                  WHEN absen_mtk_detail_mhs.status_absen = 4 THEN 'A'
+                                  WHEN absen_mtk_detail_mhs.status_absen = 5 THEN 'A'
                                   END as keterangan_absen,
                                   DATE_FORMAT(absen_mtk.waktu_input,'%d-%m-%Y') as tanggal_masuk
                                   FROM absen_mtk_detail_mhs, absen_mtk, jadual, mtk 
@@ -205,6 +218,57 @@ function absen_mhs_detail($id_jadual, $nim ){
             return NULL;
     }
   }
+
+function rekap_absen_mhs($id_jadual){
+  $query = $this->db_2->query(" SELECT absen_mtk.id_jadual,COUNT(absen_mtk_detail_mhs.nim) as jml, 
+                      COUNT(CASE WHEN absen_mtk_detail_mhs.status_absen = 1 THEN absen_mtk_detail_mhs.status_absen else null end) as jml_masuk,
+                      COUNT(CASE WHEN absen_mtk_detail_mhs.status_absen = 2 THEN absen_mtk_detail_mhs.status_absen else null end) as jml_sakit,
+                      COUNT(CASE WHEN absen_mtk_detail_mhs.status_absen = 3 THEN absen_mtk_detail_mhs.status_absen else null end) as jml_izin,
+                      COUNT(CASE WHEN absen_mtk_detail_mhs.status_absen = 4 THEN absen_mtk_detail_mhs.status_absen else null end) as jml_terlambat,
+                      COUNT(CASE WHEN absen_mtk_detail_mhs.status_absen = 5 THEN absen_mtk_detail_mhs.status_absen else null end) as jml_alfa,
+                      mtk.nama as nm_matkul, 
+                      jadual.periode, 
+                      mtk.id_mtk,
+                      absen_mtk_detail_mhs.nim,
+                      (COUNT(CASE WHEN absen_mtk_detail_mhs.status_absen = 1 THEN absen_mtk_detail_mhs.status_absen else null end) + 
+                       COUNT(CASE WHEN absen_mtk_detail_mhs.status_absen = 2 THEN absen_mtk_detail_mhs.status_absen else null end) +
+                       COUNT(CASE WHEN absen_mtk_detail_mhs.status_absen = 4 THEN absen_mtk_detail_mhs.status_absen else null end)
+                       )/ COUNT(absen_mtk_detail_mhs.nim)
+                      * 100 as pers, 
+                      mhs.nama as mhs_nama
+                      FROM `absen_mtk`, absen_mtk_detail_mhs,jadual, mtk, mhs
+                      where 
+                      mhs.nim = absen_mtk_detail_mhs.nim
+                      AND
+                      absen_mtk.id_absen = absen_mtk_detail_mhs.id_absen
+                      AND
+                      absen_mtk.id_jadual = '$id_jadual'
+                      AND
+                      jadual.id_jadual = absen_mtk.id_jadual
+                      AND
+                      jadual.id_mtk = mtk.id_mtk
+                      GROUP BY absen_mtk_detail_mhs.nim
+                              ");
+        if($query->num_rows >0){
+            return $query;   
+        }else{
+            return NULL;
+    }
+  }
+
+
+   function ketua_kelas($id_jadual){
+         $this->query = $this->db_2->query("SELECT * FROM jadual, mhs WHERE jadual.nim = mhs.nim AND jadual.id_jadual = '".$id_jadual."'");
+          if($this->query->num_rows >0){
+            return $this->query;   
+            }else{
+            return NULL;
+        }
+
+    } 
+
+
+
 
 }
     ?>
