@@ -1,4 +1,39 @@
+<!-- <script src="<?php echo base_url() ?>assets/jquery/jquery-3.2.1.min.js"></script> -->
+<script type="text/javascript">
+  
+      function aktif_mtk(x){
+          
+          $.post("<?php echo base_url() ?>absensi/aktifkan_mtk",
+          {
+            id_jadual: x
+            
+          },
+          function(data,status){
+              alert("Data: " + data + "\nStatus: " + status);
+          
+          });
+         location.reload();
 
+
+          //alert("Data: " + x );
+      }
+
+      function non_aktif_mtk(y){
+          
+          $.post("<?php echo base_url() ?>absensi/non_aktif_mtk",
+          {
+            id_jadual: y
+            
+          },
+          function(data,status){
+              alert("Data: " + data + "\nStatus: " + status);
+          });
+          location.reload();
+
+          //alert("Data: " + x );
+      }
+  
+</script>
       <!-- BEGIN PAGE -->  
       <div id="main-content">
          <!-- BEGIN PAGE CONTAINER-->
@@ -49,6 +84,7 @@
                                   <th>Thn Akademik</th>
                                   <th>Periode</th>
 								  <th>Status</th>
+                                  <th>Aktif Matakuliah</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -68,6 +104,18 @@ foreach($nilai_belum_input->result() as $row)
                                     <td><?php echo $row->thn_akademik; ?></td>
                                     <td><?php echo $row->periode; ?></td>
 									<td><?php echo ($row->id_status==0) ?  'Terbuka' : 'Belum Pernah Diinput' ;?></td>
+                                   <td>
+                                      <?php if($row->akademik_validasi == 0){
+                                                //echo anchor( 'absensi/aktifkan_mtk/'.$row->id_jadual,'aktifkan');
+                                                echo "<button type='button' class = 'btn btn-default' onclick=aktif_mtk('$row->id_jadual')>Aktifkan</button>";
+                                            }else{
+                                                //echo '<a style="color:red" href="../absensi/non_aktifkan_mtk/'.$row->id_jadual.'">Non Aktifkan</a>';
+                                                echo "<button type='button' class = 'btn btn-danger' onclick=non_aktif_mtk('$row->id_jadual')>Non Aktifkan</button>";
+                                            }
+
+
+                                      ?>
+                                    </td>
                                 </tr>
 
 <?php 
