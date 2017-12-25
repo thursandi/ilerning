@@ -130,12 +130,9 @@ endforeach;
                                         <th>Waktu Mengajar</th>
                                         <th>Ruangan</th>
                                         <th>Kelas</th>
-                                        <th>Bobot Tugas</th>
-                                        <th>Bobot UTS</th>
-                                        <th>Bobot UAS</th>
                                         <th>Thn Akademik</th>
                                         <th>Periode</th>
-                                        <th>Lihat Rps</th>
+                                        <th>Operasi</th>
                                       </tr>
                                   </thead>
                                   <tbody>
@@ -147,35 +144,54 @@ foreach($jadwal_mengajar->result() as $row)
                                 <tr class="odd gradeX">
                                     <td><?php echo $i; ?></td>
                                     <?php
-                                        if($mtk_aktif->num_rows == 0){
+                                        if($row->akademik_validasi > 0){
 
-                                          echo "<td>".anchor( 'absensi/mahasiswa/'.$row->id_jadual,$row->nama)."</td>";
+                                          if(strpos($row->nama,"Praktikum") === False){
 
+                                            
+                                            echo "<td>".anchor( 'absensi/mahasiswa/'.$row->id_jadual,$row->nama)."</td>";
+                                            
+                                          }else{
+                                            //cek apakah mtk_teori dh selesai
+                                            if($aktif_teori->num_rows > 1){
+                                                echo "<td style='color:red'>".$row->nama."</td>";   
+                                            }else{
+                                                echo "<td>".anchor( 'absensi/mahasiswa/'.$row->id_jadual,$row->nama)."</td>";
+                                            }
+                                            //--------------------------------
+
+                                            
+                                            
+                                          }
+
+                                        
                                         }else{
+                                          
+                                          /*if($mtk_aktif->num_rows > 0){
 
-                                          if($mtk_aktif->row()->id_jadual == $row->id_jadual){
+                                            if($mtk_aktif->row()->id_jadual == $row->id_jadual){
 
                                               echo "<td>".anchor( 'absensi/mahasiswa/'.$row->id_jadual,$row->nama)."</td>";
 
-                                          }else{
+                                            }else{
 
-                                              echo "<td>".$row->nama."</td>";
-                                          }
+                                                echo "<td>".$row->nama."</td>";
+                                            }
 
-                                          
+
+                                          }*/
+
+                                          echo "<td>".$row->nama."</td>";                                         
                                         }
                                     ?>            
-                                    
                                     <td><?php echo "$row->hari, $row->jam_mulai - $row->jam_selesai"; ?></td>
                                     <td><?php echo $row->ruangan; ?></td>
                                     <td><?php echo $row->kelas; ?></td>
-                                    <td><?php echo $row->bobot_tugas; ?></td>
-                                    <td><?php echo $row->bobot_uts; ?></td>
-                                    <td><?php echo $row->bobot_uas; ?></td>
                                     <td><?php echo $row->thn_akademik; ?></td>
                                     <td><?php echo (($row->periode==1)?'Ganjil':'Genap'); ?></td>
-                                    <td><?php echo anchor( 'absensi','Lihat RPS'); ?></td>
-                              
+                                    <td><?php echo anchor( 'absensi/rps/'.$row->id_mtk,'Lihat RPS |'); ?> <?php echo anchor( 'absensi/rekap_mhs_dosen/'.$row->id_jadual,'Lihat Absen |'); ?> 
+                                    <?php echo anchor( 'absensi/ketua_kelas/'.$row->id_jadual,'Ketua Kelas'); ?> 
+                                    </td>
                                 </tr>
 
 <?php 
