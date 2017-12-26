@@ -10,9 +10,10 @@
           },
           function(data,status){
               alert("Data: " + data + "\nStatus: " + status);
+              $('#'+ x).html("<button type='button' class = 'btn btn-danger' onclick='non_aktif_mtk("+x+")'>Non Aktifkan</button>");
           
           });
-         location.reload();
+         //location.reload();
 
 
           //alert("Data: " + x );
@@ -27,8 +28,9 @@
           },
           function(data,status){
               alert("Data: " + data + "\nStatus: " + status);
+              $('#'+ y).html("<button type='button' class = 'btn btn-default' onclick='aktif_mtk("+y+")'>Aktifkan</button>");
           });
-          location.reload();
+          //location.reload();
 
           //alert("Data: " + x );
       }
@@ -79,11 +81,11 @@
                                   <th>ID Dosen</th>
                                   <th>Nama Dosen</th>
                                   <th>ID Jadual</th>
-								  <th>Kelas</th>
+                  <th>Kelas</th>
                                   <th>Mata Kuliah</th>
                                   <th>Thn Akademik</th>
                                   <th>Periode</th>
-								  <th>Status</th>
+                  <th>Status</th>
                                   <th>Aktif Matakuliah</th>
                                 </tr>
                             </thead>
@@ -99,12 +101,12 @@ foreach($nilai_belum_input->result() as $row)
                                     <td><?php echo $row->id_dosen; ?></td>
                                     <td><?php echo $row->nama_dosen; ?></td>
                                     <td><?php echo $row->id_jadual; ?></td>
-									<td><?php echo $row->kelas; ?></td>
+                  <td><?php echo $row->kelas; ?></td>
                                     <td><?php echo $row->nama; ?></td>
                                     <td><?php echo $row->thn_akademik; ?></td>
                                     <td><?php echo $row->periode; ?></td>
-									<td><?php echo ($row->id_status==0) ?  'Terbuka' : 'Belum Pernah Diinput' ;?></td>
-                                   <td>
+                  <td><?php echo ($row->id_status==0) ?  'Terbuka' : 'Belum Pernah Diinput' ;?></td>
+                                   <td id=<?php echo $row->id_jadual; ?>>
                                       <?php if($row->akademik_validasi == 0){
                                                 //echo anchor( 'absensi/aktifkan_mtk/'.$row->id_jadual,'aktifkan');
                                                 echo "<button type='button' class = 'btn btn-default' onclick=aktif_mtk('$row->id_jadual')>Aktifkan</button>";
